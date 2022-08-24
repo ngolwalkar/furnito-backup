@@ -1,34 +1,28 @@
-const express = require("express");
+import express, { json } from "express";
 const app = express();
-const cookieParser = require("cookie-parser");
-var cors =require("cors");
-const errorMiddleware = require("./middleware/error");
-
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import errorMiddleware from "./middleware/error";
 
 // Config
 if (process.env.NODE_ENV !== "PRODUCTION") {
-    require("dotenv").config({ path: "backend/config/config.env" });
-  }
+  require("dotenv").config({ path: "backend/config/config.env" });
+}
 ///
-app.use(express.json());
+app.use(json());
 app.use(cookieParser());
 app.use(cors());
 //Routes Import
 
-const product = require("./routes/productRoute");
-const user =require("./routes/userRoute");
-const order =require("./routes/orderRoute");
+import product from "./routes/productRoute";
+import user from "./routes/userRoute";
+import order from "./routes/orderRoute";
 
-app.use("/api/v1",product);
-app.use("/api/v1",user);
-app.use("/api/v1",order);
+app.use("/api/v1", product);
+app.use("/api/v1", user);
+app.use("/api/v1", order);
 
 //MiddleWare For Errors
 app.use(errorMiddleware);
 
-
-
-
-
-
-module.exports = app;
+export default app;
