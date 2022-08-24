@@ -7,12 +7,9 @@
     "node": "16.16.0"
   },
   "scripts": {
-    "dev": "npm start",
-    "start": "serve -s build",
-    "build": "npm build",
-    "test": "npm test --env=jsdom",
-    "eject": "npm eject",
-    "heroku-postbuild": "npm run build"
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "heroku-postbuild": "npm run start"
   },
   "author": "mayur walke",
   "license": "ISC",

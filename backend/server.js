@@ -1,24 +1,24 @@
-import app from "./app";
+const app = require("./app");
 
-import connectDatabase from "./config/database";
+const dotenv = require("dotenv");
+const connectDatabase = require("./config/database");
 
 // Handling Uncaught Exception
 // Errors causes due to using undeclered variable
 process.on("uncaughtException", (err) => {
-  console.log("Error:  ${err.message}");
+  console.log(`Error:  ${err.message}`);
   console.log("Shutting down the server due to uncaughtException");
   process.exit(1);
 });
 
-// Config
-if (process.env.NODE_ENV !== "PRODUCTION") {
-  require("dotenv").config({ path: "backend/config/config.env" });
-}
+//config
+
+dotenv.config({ path: "backend/config/config.env" });
 
 // Connecting to database
 connectDatabase();
 
-const server = app.listen(process.env.PORT || 2000, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log(`Server is working on http://localhost:${process.env.PORT}`);
 });
 
