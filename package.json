@@ -7,12 +7,10 @@
     "node": "16.16.0"
   },
   
-  "scripts": {
+ "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "serve -s build",
-    "build": "node-scripts build",
-    "dev": "nodemon backend/server.js",
-    "heroku-postbuild": "npm run build"
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
   },
   "author": "mayur walke",
   "license": "ISC",
