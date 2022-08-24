@@ -1,72 +1,66 @@
-const ErrorHander = require("../utils/errorhander");
+const ErrorHander = require("../utils/errorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
-
-
-
 // Register a user
-exports.registerUser = catchAsyncErrors( async(req, res, next) =>{
-    const {name,email,password} =req.body;
+exports.registerUser = catchAsyncErrors(async (req, res, next) => {
+  const { name, email, password } = req.body;
 
-    const user = await User.create({
-        name,email,password,
-        avtar:{
-            public_id:"This is a sample id",
-            url:"profilepicUrl"
-        }
-    });
+  const user = await User.create({
+    name,
+    email,
+    password,
+    avtar: {
+      public_id: "This is a sample id",
+      url: "profilepicUrl",
+    },
+  });
 
-    sendToken(user, 201, res);
-
-}); 
-
-
+  sendToken(user, 201, res);
+});
 
 // Login User
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {
-    const { email, password } = req.body;
-  
-    // checking if user has given password and email both
-  
-    if (!email || !password) {
-      return next(new ErrorHander("Please Enter Email & Password", 400));
-    }
-  
-    const user = await User.findOne({ email }).select("+password");
-  
-    if (!user) {
-      return next(new ErrorHander("Invalid email or password", 401));
-    }
-  
-    const isPasswordMatched = await user.comparePassword(password);
-  
-    if (!isPasswordMatched) {
-      return next(new ErrorHander("Invalid email or password", 401));
-    }
-  
-    sendToken(user, 200, res);
-  });
+  const { email, password } = req.body;
 
-   
+  // checking if user has given password and email both
+
+  if (!email || !password) {
+    return next(new ErrorHander("Please Enter Email & Password", 400));
+  }
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user) {
+    return next(new ErrorHander("Invalid email or password", 401));
+  }
+
+  const isPasswordMatched = await user.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    return next(new ErrorHander("Invalid email or password", 401));
+  }
+
+  sendToken(user, 200, res);
+});
+
 // Logout User
 exports.logout = catchAsyncErrors(async (req, res, next) => {
-    res.cookie("token", null, {
-      expires: new Date(Date.now()),
-      httpOnly: true,
-    });
-  
-    res.status(200).json({
-      success: true,
-      message: "Logged Out",
-    });
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
   });
-  
 
-  // Forgot Password
+  res.status(200).json({
+    success: true,
+    message: "Logged Out",
+  });
+});
+
+// Forgot Password
 exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
@@ -81,7 +75,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
   const resetPasswordUrl = `${req.protocol}://${req.get(
     "host"
-    )}/api/v1/password/reset/${resetToken}`;
+  )}/api/v1/password/reset/${resetToken}`;
 
   //  )}/password/reset/${resetToken}`;
 
@@ -107,7 +101,6 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHander(error.message, 500));
   }
 });
-
 
 // Reset Password
 
@@ -145,7 +138,6 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
-
 // Get User Detail
 exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.user.id);
@@ -155,7 +147,6 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
-
 
 // update User password
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
@@ -178,15 +169,12 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
-
 // update User Profile
 exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
   const newUserData = {
     name: req.body.name,
     email: req.body.email,
   };
-
- 
 
   const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
     new: true,
@@ -199,7 +187,6 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
-
 // Get all users(admin)
 exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
   const users = await User.find();
@@ -209,7 +196,6 @@ exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
     users,
   });
 });
-
 
 // Get single user (admin)
 exports.getSingleUser = catchAsyncErrors(async (req, res, next) => {
